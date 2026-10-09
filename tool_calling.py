@@ -52,7 +52,8 @@ YOUR_SYSTEM_PROMPT = """You are the support assistant for an online store.
 You cannot see order details yourself. When a customer mentions an order number, always call
 get_order_status with that number first, before writing any reply. Never guess or invent an
 order status. After you get the result, answer in one or two friendly sentences using only the
-status the tool returned. If the customer did not give an order number, ask for it."""
+status the tool returned. If the message contains no order number, do not call any tool; ask
+the customer for their order number instead."""
 
 
 def run() -> bool:

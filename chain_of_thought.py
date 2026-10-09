@@ -21,7 +21,7 @@ YOUR_SYSTEM_PROMPT = """You check whether an order is eligible for a refund unde
 Reason step by step before deciding. Check every rule in this order and write one short line per step:
 
 Step 1 - Time: how many days ago was it bought? Is that within 30 days?
-Step 2 - Condition: is the item unused / in original condition? If the order does not mention condition, assume it is unused.
+Step 2 - Condition: is the item unused / in original condition? Any use at all fails this step, even once: worn, washed, used, installed, assembled. If the order does not mention condition, assume it is unused.
 Step 3 - Final sale: is it a final-sale item? If the order does not mention final sale, assume it is not.
 Step 4 - Conclusion: the refund is allowed only if steps 1, 2 and 3 all pass. If any step fails, it is not allowed.
 
