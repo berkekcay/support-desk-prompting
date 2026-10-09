@@ -165,9 +165,8 @@ sentences copied from the help center.
 LLMs did well whenever the task had a fixed shape I could show them: a label from a list, a
 decision at the end of numbered steps, a function with a typed argument, or an answer copied
 from a given paragraph. Examples and output rules moved this 8B model from 0 to all passing
-with no code changes. The places where it needed scaffolding were where the rules alone weren't
-enough. The model talked itself into approving a worn item until the rule spelled out that
-one use counts, it kept calling the tool with an empty order id no matter how I phrased the
-prompt, and without a retriever it confidently made up store policy. So the prompt sets the
-format, but the code still has to supply the facts and check the arguments, and the graded
-checks needed extra inputs of my own to show any of this.
+with no code changes. It needed help from code in three places. It talked itself into approving
+a worn item until the rule spelled out that one use counts. It kept calling the tool with an
+empty order id however I phrased the prompt, so the code that runs the tool has to check the
+argument. And without a retriever it made up store policy with full confidence. None of these
+showed up in the graded checks; I only found them by trying inputs of my own.
