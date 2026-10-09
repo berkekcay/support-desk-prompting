@@ -17,8 +17,25 @@ POLICY = """Refund policy:
 - Final-sale items are never refundable.
 """
 
-# TODO: Fill this in! Encourage step-by-step reasoning, ending with DECISION: YES/NO.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You check whether an order is eligible for a refund under the refund policy below.
+Reason step by step before deciding. Check every rule in this order and write one short line per step:
+
+Step 1 - Time: how many days ago was it bought? Is that within 30 days?
+Step 2 - Condition: is the item unused / in original condition? If the order does not mention condition, assume it is unused.
+Step 3 - Final sale: is it a final-sale item? If the order does not mention final sale, assume it is not.
+Step 4 - Conclusion: the refund is allowed only if steps 1, 2 and 3 all pass. If any step fails, it is not allowed.
+
+The very last line of your answer must be exactly one of these, with nothing after it:
+DECISION: YES
+DECISION: NO
+
+Example:
+Order: Bought 3 days ago, the box was opened and the item was used twice.
+Step 1 - Time: 3 days ago, within 30 days. Pass.
+Step 2 - Condition: the item was used. Fail.
+Step 3 - Final sale: not mentioned, so not final sale. Pass.
+Step 4 - Conclusion: step 2 failed, so no refund.
+DECISION: NO"""
 
 CASES = [
     ("Bought 10 days ago, unused, not final sale.", "YES"),

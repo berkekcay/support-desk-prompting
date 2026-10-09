@@ -20,13 +20,39 @@ def load_chunks() -> list[str]:
         return [line.strip() for line in f if line.strip()]
 
 
-# TODO: return the subset of chunks relevant to `question` (simple keyword overlap is fine).
-def YOUR_RETRIEVER(question: str, chunks: list[str]) -> list[str]:
-    return []
+STOPWORDS = {
+    "a", "an", "the", "and", "or", "of", "to", "in", "on", "for", "with", "is", "are", "be",
+    "do", "does", "did", "i", "you", "your", "we", "our", "my", "me", "it", "its", "can",
+    "have", "has", "how", "what", "what's", "whats", "when", "where", "which", "who", "why",
+    "there", "this", "that", "any", "if", "at", "by", "from", "as", "will", "would", "am",
+}
 
 
-# TODO: Fill this in! Force the model to answer only from the provided context.
-YOUR_SYSTEM_PROMPT = ""
+def _keywords(text: str) -> set[str]:
+    """Lowercase content words, cut to a 4-letter prefix so 'ship' matches 'shipping'
+    and 'internationally' matches 'international'."""
+    cleaned = "".join(c if c.isalnum() or c == "'" else " " for c in text.lower())
+    words = cleaned.split()
+    return {w[:4] for w in words if w not in STOPWORDS and len(w) > 2}
+
+
+# Keyword-overlap retriever: rank chunks by shared keywords, drop chunks with no overlap.
+def YOUR_RETRIEVER(question: str, chunks: list[str], top_k: int = 3) -> list[str]:
+    query = _keywords(question)
+    scored = [(len(query & _keywords(chunk)), chunk) for chunk in chunks]
+    ranked = sorted((pair for pair in scored if pair[0] > 0), key=lambda pair: -pair[0])
+    return [chunk for _, chunk in ranked[:top_k]]
+
+
+YOUR_SYSTEM_PROMPT = """You are the support assistant for an online store.
+Answer the customer's question using ONLY the text under "Context". Do not use outside
+knowledge and do not guess.
+
+- If the context answers the question, reply in one or two sentences and keep the exact
+  numbers and wording from the context (for example "30 days" or "international shipping").
+- If the context is empty, or it does not contain the answer, reply exactly:
+  I don't know. Please contact our support team for help with that.
+- Never make up personal information about anyone."""
 
 CASES = [
     ("How long do I have to return an item?", ["30 days"]),

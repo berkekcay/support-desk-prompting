@@ -26,11 +26,21 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "get_order_status",
-            "description": "",  # TODO
+            "description": (
+                "Look up the current status of a customer's order in the store's order "
+                "database. Call this whenever the customer asks where an order is, whether "
+                "it has shipped, or anything else about a specific order."
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "order_id": {"type": "string", "description": ""},  # TODO
+                    "order_id": {
+                        "type": "string",
+                        "description": (
+                            "The order number exactly as the customer wrote it, digits only "
+                            "and without '#' or the word 'order', e.g. '4412'."
+                        ),
+                    },
                 },
                 "required": ["order_id"],
             },
@@ -38,8 +48,11 @@ TOOLS = [
     }
 ]
 
-# TODO: Fill this in! Tell the model to look up the order before answering.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are the support assistant for an online store.
+You cannot see order details yourself. When a customer mentions an order number, always call
+get_order_status with that number first, before writing any reply. Never guess or invent an
+order status. After you get the result, answer in one or two friendly sentences using only the
+status the tool returned. If the customer did not give an order number, ask for it."""
 
 
 def run() -> bool:
